@@ -1,0 +1,59 @@
+name: Publish Microsoft Graph Components
+
+on:
+  push:
+    branches:
+      - development
+    paths:
+      - 'components/microsoft_graph/**'
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [16.x]
+        
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          
+      - name: Install Dependencies
+        working-directory: ./components/microsoft_graph
+        run: |
+          npm ci
+          
+      - name: Type Check
+        working-directory: ./components/microsoft_graph
+        run: npx tsc --noEmit
+        
+      - name: Build TypeScript
+        working-directory: ./components/microsoft_graph
+        run: npm run build
+        
+      - name: Install Pipedream CLI
+        run: curl https://cli.pipedream.com/install | sh
+        
+      - name: Publish Components
+        working-directory: ./components/microsoft_graph/dist
+        env:
+          PD_API_KEY: ${{ secrets.PD_API_KEY }}
+        run: |
+          # First check if files exist before trying to publish
+          if [ -d "actions" ] && [ "$(find actions -name '*.js' | wc -l)" -gt 0 ]; then
+            for f in $(find actions -name "*.js"); do
+              pd publish "$f"
+            done
+          fi
+          
+          if [ -d "sources" ] && [ "$(find sources -name '*.js' | wc -l)" -gt 0 ]; then
+            for f in $(find sources -name "*.js"); do
+              pd publish "$f"
+            done
+          fi 
