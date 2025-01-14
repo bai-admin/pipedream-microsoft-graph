@@ -1,0 +1,38 @@
+{
+  "name": "@pipedream/microsoft_graph",
+  "version": "0.1.0",
+  "description": "Pipedream Microsoft Graph Components",
+  "main": "dist/microsoft_graph.app.js",
+  "types": "dist/microsoft_graph.app.d.ts",
+  "files": ["dist"],
+  "keywords": [
+    "pipedream",
+    "microsoft_graph"
+  ],
+  "homepage": "https://pipedream.com/apps/microsoft_graph",
+  "author": "Pipedream <support@pipedream.com> (https://pipedream.com/)",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@microsoft/microsoft-graph-client": "^3.0.1",
+    "@pipedream/platform": "^1.5.1",
+    "@pipedream/types": "^1.0.0",
+    "async-retry": "^1.3.3",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@types/lodash": "^4.14.178",
+    "@types/async-retry": "^1.4.5",
+    "typescript": "^4.9.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "preversion": "npm run lint",
+    "prepare": "npm run build"
+  }
+} 
